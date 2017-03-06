@@ -12,6 +12,7 @@ class VerifyCsrfToken extends BaseVerifier
      * @var array
      */
     protected $except = [
-        //
+        // Disabling CSRF verification here since this is a SSO application...
+        '*'
     ];
 }
