@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthProcessor extends Controller {
-  static function BeginCycle($username, $password, $apikey) {
+  static function BeginCycle($username, $password, $apikey, $callback = "https://localhost:4434/error") {
     if (OrganizationConfig::GetConfig()['ApiKey'] == $apikey) {
       if (OrganizationConfig::GetConfig()['AuthProcessor'] == "mysql") {
         $connector = new MysqlConnector;
@@ -52,7 +52,7 @@ class AuthProcessor extends Controller {
     }
   }
 
-  static function CreateAccount($data, $apikey) {
+  static function CreateAccount($data, $apikey, $callback = "https://localhost:4434/error") {
     if (OrganizationConfig::GetConfig()['ApiKey'] == $apikey) {
       if (OrganizationConfig::GetConfig()['AuthProcessor'] == "mysql") {
         if (isset($data['username']) && isset($data['password']) && isset($data['disabled'])) {
@@ -72,8 +72,10 @@ class AuthProcessor extends Controller {
             $data['password'] = Hash::make($data['password']);
             $connector = new MysqlConnector;
             $connector->CreateAccount($data);
-            ResponseHandler::ReturnPasswordChanged();
+            ResponseHandler::ReturnAccountCreated($connector->token);
           }
+        } else {
+          ResponseHandler::ReturnNotEnoughParameters();
         }
       } elseif (OrganizationConfig::GetConfig()['AuthProcessor'] == "ldap") {
           if (isset($data['username']) && isset($data['password']) && isset($data['disabled'])) {
@@ -103,6 +105,8 @@ class AuthProcessor extends Controller {
                 ResponseHandler::ReturnPasswordChanged();
               }
             }
+          } else {
+            ResponseHandler::ReturnNotEnoughParameters();
           }
       } else {
         ResponseHandler::ReturnInternalError();
@@ -112,7 +116,7 @@ class AuthProcessor extends Controller {
     }
   }
 
-  static function ChangePassword($username, $password, $newpassword, $apikey) {
+  static function ChangePassword($username, $password, $newpassword, $apikey, $callback = "https://localhost:4434/error") {
     if (OrganizationConfig::GetConfig()['ApiKey'] == $apikey) {
       if (OrganizationConfig::GetConfig()['AuthProcessor'] == "mysql") {
         $connector = new MysqlConnector;
@@ -178,7 +182,7 @@ class AuthProcessor extends Controller {
   }
 }
 
- static function DeleteAccount($username, $password, $apikey) {
+ static function DeleteAccount($username, $password, $apikey, $callback = "https://localhost:4434/error") {
     if (OrganizationConfig::GetConfig()['ApiKey'] == $apikey) {
       if (OrganizationConfig::GetConfig()['AuthProcessor'] == "mysql") {
         $connector = new MysqlConnector;
@@ -222,7 +226,7 @@ class AuthProcessor extends Controller {
     }
   }
 
-  /**static function UpdateAccount($username, $data, $apikey) {
+  /**static function UpdateAccount($username, $data, $apikey, $callback = "https://localhost:4434/error") {
     if (OrganizationConfig::GetConfig()['ApiKey'] == $apikey) {
       if (OrganizationConfig::GetConfig()['AuthProcessor'] == "mysql") {
         $connector = new MysqlConnector;
@@ -248,7 +252,7 @@ class AuthProcessor extends Controller {
     }
   }**/
 
-  static function Logout() {
+  static function Logout($callback = "https://localhost:4434/error") {
     ResponseHandler::ReturnLogout();
   }
 }

@@ -88,6 +88,12 @@ class ResponseHandler extends Controller {
     echo json_encode($response);
   }
 
+  static function ReturnAccountCreated($token) {
+    $response = array("type"=>"response", "id"=>"1", "attributes"=>array("response_friendly"=>"The account has been created.", "response_code"=>"account_created"), "payload"=>array("token"=>$token));
+    header('Content-Type: application/json');
+    echo json_encode($response);
+  }
+
   static function ReturnAccountDeleted() {
     $response = array("type"=>"response", "id"=>"1", "attributes"=>array("response_friendly"=>"The account has been deleted.", "response_code"=>"user_deleted"));
     header('Content-Type: application/json');
@@ -96,6 +102,18 @@ class ResponseHandler extends Controller {
 
   static function ReturnInvalidApiKey() {
     $response = array("type"=>"error", "id"=>"1", "attributes"=>array("error_friendly"=>"Invalid API key.", "error_code"=>"invalid_apikey"));
+    header('Content-Type: application/json');
+    echo json_encode($response);
+  }
+
+  static function ReturnRiskEngineError($incidentid) {
+    $response = array("type"=>"error", "id"=>"1", "attributes"=>array("error_friendly"=>"RiskEngine security error.", "error_code"=>"riskengine_error", "incident_id"=>$incidentid));
+    header('Content-Type: application/json');
+    echo json_encode($response);
+  }
+
+  static function ReturnRiskEngineWarning($incidentid) {
+    $response = array("type"=>"error", "id"=>"1", "attributes"=>array("error_friendly"=>"RiskEngine security warning.", "error_code"=>"riskengine_warning", "incident_id"=>$incidentid));
     header('Content-Type: application/json');
     echo json_encode($response);
   }

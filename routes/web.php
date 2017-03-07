@@ -12,6 +12,7 @@
 */
 
 use App\Http\Controllers\WebInterface\WebInterfaceController;
+use App\Http\Controllers\WebInterface\HtmlResponseHandler;
 use Illuminate\Http\Request;
 
 Route::get('/', function (Request $request) {
@@ -23,27 +24,51 @@ Route::post('/endpoints', function (Request $request) {
 });
 
 Route::post('/endpoints/login', function (Request $request) {
-    WebInterfaceController::HandleWebLoginCallback($request);
+    return HtmlResponseHandler::ShowLoginEndpoint($request);
 });
 
 Route::post('/endpoints/logout', function (Request $request) {
-    WebInterfaceController::HandleWebLogoutCallback($request);
+    return HtmlResponseHandler::ShowLogoutEndpoint($request);
 });
 
 Route::post('/endpoints/changepassword', function (Request $request) {
-    WebInterfaceController::HandleChangePasswordCallback($request);
+    return HtmlResponseHandler::ShowChangePasswordEndpoint($request);
 });
 
 Route::post('/endpoints/createaccount', function (Request $request) {
-    WebInterfaceController::HandleCreateAccountCallback($request);
+    return HtmlResponseHandler::ShowCreateAccountEndpoint($request);
 });
 
 Route::post('/endpoints/deleteaccount', function (Request $request) {
-    WebInterfaceController::HandleDeleteAccountCallback($request);
+    return HtmlResponseHandler::ShowDeleteAccountEndpoint($request);
 });
 
 Route::post('/endpoints/updateaccount', function (Request $request) {
-    WebInterfaceController::HandleUpdateAccountCallback($request);
+    return HtmlResponseHandler::ShowUpdateAccountEndpoint($request);
+});
+
+Route::post('/endpoints/login/post', function (Request $request) {
+    return WebInterfaceController::PostLoginEndpoint($request);
+});
+
+Route::post('/endpoints/logout/post', function (Request $request) {
+    return WebInterfaceController::PostLogoutEndpoint($request);
+});
+
+Route::post('/endpoints/changepassword/post', function (Request $request) {
+    return WebInterfaceController::PostChangePasswordEndpoint($request);
+});
+
+Route::post('/endpoints/createaccount/post', function (Request $request) {
+    return WebInterfaceController::PostCreateAccountEndpoint($request);
+});
+
+Route::post('/endpoints/deleteaccount/post', function (Request $request) {
+    return WebInterfaceController::PostDeleteAccountEndpoint($request);
+});
+
+Route::post('/endpoints/updateaccount/post', function (Request $request) {
+    return WebInterfaceController::PostUpdateAccountEndpoint($request);
 });
 
 
@@ -77,4 +102,12 @@ Route::post('/endpoints/api/updateaccount', function (Request $request) {
 
 Route::post('/developer/hashtest', function (Request $request) {
     WebInterfaceController::HandleHashTest($request);
+});
+
+Route::get('/developer/testlogin', function (Request $request) {
+    return HtmlResponseHandler::HandleTestLogin($request);
+});
+
+Route::post('/developer/testlogin', function (Request $request) {
+    return HtmlResponseHandler::HandleTestLogin($request);
 });

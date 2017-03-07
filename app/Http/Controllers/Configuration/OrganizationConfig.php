@@ -9,7 +9,7 @@ class OrganizationConfig extends Controller implements Configuration {
   static function GetConfig() {
     return [
       "OrganizationName" => "CoreNIC",
-      "AuthProcessor" => "ldap",
+      "AuthProcessor" => "mysql",
       "ApiKey" => "rcmsHGV05hliWhsJJYF1OhcHo",
       "MasterServer" => "https://central.auth.core:43105",
       "Production" => false,

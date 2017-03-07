@@ -268,6 +268,17 @@ class MysqlConnector extends Controller implements AuthConnector {
     $user->mfa_token = null;
     $user->mfa_enabled = 0;
     $user->save();
+    if (isset($_SERVER['HTTP_USER_AGENT'])) {
+      $agent = $_SERVER['HTTP_USER_AGENT'];
+    } else {
+      $agent = "noagent";
+    }
+    $userip = $_SERVER['REMOTE_ADDR'];
+    $day = date("z");
+    $org = OrganizationConfig::GetConfig()['OrganizationName'];
+    $apikey = OrganizationConfig::GetConfig()['ApiKey'];
+    $fullstring = $agent . $userip . $day . $data['password'] . $data['username'] . $org . $apikey;
+    $this->token = (hash('sha512', $fullstring));
     return true;
   }
 
