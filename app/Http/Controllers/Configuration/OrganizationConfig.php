@@ -11,8 +11,12 @@ class OrganizationConfig extends Controller implements Configuration {
       "OrganizationName" => "CoreNIC",
       "AuthProcessor" => "mysql",
       "ApiKey" => "rcmsHGV05hliWhsJJYF1OhcHo",
-      "MasterServer" => "https://central.auth.core:43105",
+      //"MasterServer" => "https://central.auth.core:43106", // Do not change.
+      "MasterServer" => "https://localhost:43106", // For development only!
       "Production" => false,
+
+      "LicenseSerial" => "developer",
+      "LicenseKey" => "developer",
 
       // LDAP (Lightweight Directory Access Protocol) settings below
       // Special configuration required for OpenLDAP.

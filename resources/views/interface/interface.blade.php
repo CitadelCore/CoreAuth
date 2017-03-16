@@ -100,11 +100,11 @@
     </form>
     <form id="callback_form" method="post" action="{{ $callback }}">
       {{ csrf_field() }}
-      <input type="hidden" id="token"></input>
+      <input type="hidden" name="token" id="token"></input>
     </form>
     <form id="callback_error_form" method="post" action="{{ $callback }}">
       {{ csrf_field() }}
-      <input type="hidden" id="incident_id"></input>
+      <input type="hidden" name="incident_id" id="incident_id"></input>
     </form>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>

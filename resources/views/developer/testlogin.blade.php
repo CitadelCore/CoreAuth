@@ -25,8 +25,9 @@
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/testlogin.js"></script>
 </body>
-<div>{{ $token }}</div>
-<div>{{ $incident_id }}</div>
+<div>Token: {{ $token }}</div>
+<div>Incident ID: {{ $incident_id }}</div>
+<div>Debug: {{ $debug }}</div>
 <form action="https://localhost:4434/endpoints/login" id="testlogin" method="post">
   <div class="form-group">
     <label for="username">Username:</label>
