@@ -1,10 +1,14 @@
 <?php
 
-/*
+/**
  * Class for validating the CoreAuth software license.
  * Any modification of this file is prohibited.
  * By the way, don't waste your time trying to crack this.
  * All configuration information is stored in the master server anyway.
+ *
+ * @author Joseph Marsden <josephmarsden@towerdevs.xyz>
+ * @copyright 2017 CoreNIC
+ * @license https://central.core/licenses/coreauth.php
 */
 
 namespace App\Http\Controllers\Command;
@@ -15,7 +19,7 @@ use \GuzzleHttp\Exception\RequestException;
 class CoreLicensor extends Controller {
   static function ValidateLicense() {
     $request = new \GuzzleHttp\Client();
-    $config = OrganizationConfig::GetConfig();
+    $config = OrganizationConfig::GetStaticConfig();
     if (isset($config["MasterServer"])) {
       if (isset($config["LicenseSerial"])) {
         if (isset($config["LicenseKey"])) {
@@ -56,16 +60,22 @@ class CoreLicensor extends Controller {
                 throw new LicenseException("License key expired.");
               } elseif ($data['attributes']['error_code'] == "key_disabled") {
                 throw new LicenseException("License key disabled.");
+              } elseif ($data['attributes']['error_code'] == "key_noslots") {
+                throw new LicenseException("No license slots left.");
               } elseif ($data['attributes']['error_code'] == "serverhn_error") {
                 throw new LicenseException("Server hostname does not match.");
+              } elseif ($data['attributes']['error_code'] == "param_error") {
+                throw new LicenseException("Not enough parameters provided.");
+              } elseif ($data['attributes']['error_code'] == "security_error") {
+                throw new LicenseException("Master Server security error. Please contact TOWER Support.");
               } else {
                 throw new LicenseException("Master Server response code error.");
               }
             } else {
-              throw new LicenseException("Master Server response error.");
+              throw new LicenseException("Master Server response error:" . $data);
             }
           } else {
-            throw new LicenseException("Master Server internal error.");
+            throw new LicenseException("Master Server internal error:" . $return);
           }
         } else {
           throw new LicenseException("License Key is not set.");
