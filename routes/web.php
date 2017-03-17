@@ -43,10 +43,6 @@ Route::post('/endpoints/deleteaccount', function (Request $request) {
     return HtmlResponseHandler::ShowDeleteAccountEndpoint($request);
 });
 
-Route::post('/endpoints/updateaccount', function (Request $request) {
-    return HtmlResponseHandler::ShowUpdateAccountEndpoint($request);
-});
-
 Route::post('/endpoints/login/post', function (Request $request) {
     return WebInterfaceController::PostLoginEndpoint($request);
 });
@@ -65,10 +61,6 @@ Route::post('/endpoints/createaccount/post', function (Request $request) {
 
 Route::post('/endpoints/deleteaccount/post', function (Request $request) {
     return WebInterfaceController::PostDeleteAccountEndpoint($request);
-});
-
-Route::post('/endpoints/updateaccount/post', function (Request $request) {
-    return WebInterfaceController::PostUpdateAccountEndpoint($request);
 });
 
 

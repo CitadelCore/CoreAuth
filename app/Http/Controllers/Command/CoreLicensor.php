@@ -31,6 +31,7 @@ class CoreLicensor extends Controller {
                 'verify' => false,
                 'form_params' => [
                   'Organization' => $config["OrganizationName"],
+                  'OrganizationKey' => $config["OrganizationKey"],
                   'LicenseSerial' => $config["LicenseSerial"],
                   'LicenseKey' => $config["LicenseKey"],
                   'ServerHostname' => gethostname(),
@@ -38,53 +39,55 @@ class CoreLicensor extends Controller {
               ]
             );
           } catch (RequestException $e) {
-            throw new LicenseException("Failed to connect to the controller server: $e");
+            return "Failed to connect to the Core^2 server: $e. Resolution: Contact TOWER Support.";
           }
           $return = $response->getBody();
           $data = json_decode($return, true);
           if (json_last_error() == JSON_ERROR_NONE) {
             if ($data['type'] == "response") {
               if ($data['attributes']['response_code'] == "key_accepted") {
-                return true;
+                return "no_error";
               } else {
-                throw new LicenseException("Master Server response code error.");
+                return "Core^2 response code error. Resolution: Contact TOWER Support.";
               }
             } elseif ($data['type'] == "error") {
               if ($data['attributes']['error_code'] == "org_error") {
-                throw new LicenseException("The organization you entered does not exist.");
+                return "An invalid organization is configured. Resolution: Verify the organization name in the server configuration.";
+              } elseif ($data['attributes']['error_code'] == "org_key_error") {
+                return "An invalid organization key is configured. Resolution: Verify the organization key in the server configuration.";
               } elseif ($data['attributes']['error_code'] == "serial_error") {
-                throw new LicenseException("Invalid license serial.");
+                return "An invalid license serial is configured. Resolution: Verify the license serial in the server configuration.";
               } elseif ($data['attributes']['error_code'] == "key_error") {
-                throw new LicenseException("Invalid license key.");
+                return "An invalid license key is configured. Resolution: Verify the license key in the server configuration.";
               } elseif ($data['attributes']['error_code'] == "key_expired") {
-                throw new LicenseException("License key expired.");
+                return "The license key is expired. Resolution: Renew the license key.";
               } elseif ($data['attributes']['error_code'] == "key_disabled") {
-                throw new LicenseException("License key disabled.");
+                return "License key disabled. Resolution: Contact TOWER Support to have your license reactivated.";
               } elseif ($data['attributes']['error_code'] == "key_noslots") {
-                throw new LicenseException("No license slots left.");
+                return "No license slots left. Resolution: Remove a server to free up a license slot, or purchase another slot.";
               } elseif ($data['attributes']['error_code'] == "serverhn_error") {
-                throw new LicenseException("Server hostname does not match.");
+                return "Server hostname does not match. Resolution: Contact TOWER Support.";
               } elseif ($data['attributes']['error_code'] == "param_error") {
-                throw new LicenseException("Not enough parameters provided.");
+                return "Not enough parameters provided. Resolution: Contact TOWER Support.";
               } elseif ($data['attributes']['error_code'] == "security_error") {
-                throw new LicenseException("Master Server security error. Please contact TOWER Support.");
+                return "A security error occured and CoreAuth cannot verify the status of the license. Resolution: Contact TOWER Support.";
               } else {
-                throw new LicenseException("Master Server response code error.");
+                return "Core^2 response code error. Resolution: Contact TOWER Support.";
               }
             } else {
-              throw new LicenseException("Master Server response error:" . $data);
+              return "Core^2 response error:" . $data . " Resolution: Contact TOWER Support.";
             }
           } else {
-            throw new LicenseException("Master Server internal error:" . $return);
+            return "Core^2 internal error:" . $return . " Resolution: Contact TOWER Support.";;
           }
         } else {
-          throw new LicenseException("License Key is not set.");
+          return "No license key provided. Resolution: Set a license key in the server configuration.";
         }
       } else {
-        throw new LicenseException("License Serial is not set.");
+        return "No license serial provided. Resolution: Set a license serial in the server configuration.";
       }
     } else {
-      throw new LicenseException("Master Server URL is not set.");
+      return "Core^2 URL is not set. Resolution: Contact TOWER Support.";
     }
   }
 }

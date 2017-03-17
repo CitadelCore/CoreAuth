@@ -17,8 +17,12 @@ use App\Http\Controllers\Command\CoreLicensor;
 class CoreAthanatos {
   public function handle($request, Closure $next) {
     // Begin with validating the CoreAuth license.
-    CoreLicensor::ValidateLicense();
-    return $next($request);
+    $return = CoreLicensor::ValidateLicense();
+    if ($return != "no_error") {
+      return response(view('interface/error', ['error'=>$return]));
+    } else {
+      return $next($request);
+    }
   }
 }
 

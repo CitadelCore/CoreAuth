@@ -48,9 +48,8 @@ class MysqlConnector extends Controller implements AuthConnector {
             }
             $userip = $_SERVER['REMOTE_ADDR'];
             $day = date("z");
-            $org = OrganizationConfig::GetConfig()['OrganizationName'];
-            $apikey = OrganizationConfig::GetConfig()['ApiKey'];
-            $fullstring = $agent . $userip . $day . $password . $username . $org . $apikey;
+            $org = OrganizationConfig::GetStaticConfig()['OrganizationName'];
+            $fullstring = $agent . $userip . $day . $password . $username . $org;
             $this->token = (hash('sha512', $fullstring));
             return "accepted";
           } else {

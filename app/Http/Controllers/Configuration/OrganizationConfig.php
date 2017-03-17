@@ -35,11 +35,14 @@ class OrganizationConfig extends Controller implements Configuration {
 
   static function GetStaticConfig() {
     return [
-      "OrganizationName" => "CoreNIC",
+      "OrganizationName" => "CoreNIC", // Your organization's name.
+      "OrganizationKey" => "2a9fb648e7e180f44a078496b2d599c61784c5cdd028b8859bd79516300d", // Your organization's key.
+
       //"MasterServer" => "https://central.auth.core:43106", // Do not change.
       "MasterServer" => "https://localhost:43106", // For development only!
-      "LicenseSerial" => "6",
-      "LicenseKey" => "a8f41506f89413add419db39e1b8a9db0e9f3f2166c54195c1bf27563e85",
+
+      "LicenseSerial" => "1",
+      "LicenseKey" => "047ce94623f0aa4ecc4721de1f76f08ce6574052ecebb697b345d3007cd1",
     ];
   }
 }
