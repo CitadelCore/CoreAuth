@@ -39,11 +39,11 @@ If you use Nginx, set up your configuration file like this so Laravel can work:
 location / {
                 # First attempt to serve request as file, then
                 # as directory, then fall back to displaying a 404.
-                try_files \$uri \$uri/ /index.php?\$query_string;
+                try_files $uri $uri/ /index.php?$query_string;
         }
 
 location ~ \.php$ {
-                try_files \$uri /index.php =404;
+                try_files $uri $uri/ /index.php?$query_string;
                 include snippets/fastcgi-php.conf;
                 fastcgi_pass unix:/run/php/php7.0-fpm.sock;
                 fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
