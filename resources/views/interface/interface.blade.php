@@ -55,7 +55,7 @@
                     <p>RiskEngine has detected a security discrepancy. You will be allowed to continue your sign-in, but this incident has been logged and will be reported.</p>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" type="button"> Continue</button>
+                    <button class="btn btn-primary" type="button" onclick="document.getElementById('callback_form').submit();"> Continue</button>
                 </div>
             </div>
         </div>

@@ -51,7 +51,7 @@ This will change the user's password.
 Creating an account:
 Send a POST request to /endpoints/createaccount with the parameters username and password.
 This will create a new user account.
-(Please note that this is rate limited to 2 requests each 30 seconds per IP. If you need a more rapid user creation method, use an API request.)
+(Please note that this is rate limited to 2 requests each 30 seconds per IP. If you need a more rapid user creation method, use an API request. Alternatively you can raise the rate limit in the configuration file, but this is not reccomended.)
 
 Deleting an account:
 Send a POST request to /endpoints/deleteaccount with the parameters username and password.

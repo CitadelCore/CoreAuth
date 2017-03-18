@@ -12,6 +12,7 @@ function submitQuery() {
           $('#re_error').modal('show');
         } else if (json_payload['attributes']['error_code'] == "riskengine_warning") {
           $('#re_warning').modal('show');
+          document.getElementById("token").value = json_payload['payload']['token'];
         } else if (json_payload['attributes']['error_code'] == "user_mfarequired") {
           $('#re_challenge').modal('show');
         } else {

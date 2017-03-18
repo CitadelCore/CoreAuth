@@ -21,7 +21,7 @@ class WebInterfaceController extends Controller {
   static function PostLoginEndpoint($request) {
     if ($request->isMethod("post")) {
       if ($request->has("username") && $request->has("password")) {
-        AuthProcessor::BeginCycle($request->input("username"), $request->input("password"), OrganizationConfig::GetConfig()["ApiKey"]);
+        AuthProcessor::BeginCycle($request->input("username"), $request->input("password"), OrganizationConfig::GetConfig()["ApiKey"], null, $request);
       } else {
         ResponseHandler::ReturnNotEnoughParameters();
       }
@@ -36,7 +36,7 @@ class WebInterfaceController extends Controller {
         $data = json_decode($request->input("data"), true);
         if (json_last_error() == JSON_ERROR_NONE) {
           if (isset($data["username"]) && isset($data["password"]) && isset($data["apikey"])) {
-            AuthProcessor::BeginCycle($data["username"], $data["password"], $data["apikey"]);
+            AuthProcessor::BeginCycle($data["username"], $data["password"], $data["apikey"], $request);
           } else {
             ResponseHandler::ReturnNotEnoughParameters();
           }
@@ -60,7 +60,7 @@ class WebInterfaceController extends Controller {
       if ($request->has("data")) {
         $data = json_decode($request->input("data"), true);
         if (json_last_error() == JSON_ERROR_NONE) {
-          AuthProcessor::CreateAccount($data, $data['apikey']);
+          AuthProcessor::CreateAccount($data, $data['apikey'], $request);
         } else {
           ResponseHandler::ReturnInvalidSyntax();
         }
@@ -78,7 +78,7 @@ class WebInterfaceController extends Controller {
         $data = json_decode($request->input("data"), true);
         if (json_last_error() == JSON_ERROR_NONE) {
           if (isset($data["username"]) && isset($data["password"]) && isset($data["newpassword"]) && isset($data["apikey"])) {
-            AuthProcessor::ChangePassword($data["username"], $data["password"], $data["newpassword"], $data["apikey"]);
+            AuthProcessor::ChangePassword($data["username"], $data["password"], $data["newpassword"], $data["apikey"], $request);
           } else {
             ResponseHandler::ReturnNotEnoughParameters();
           }
@@ -99,7 +99,7 @@ class WebInterfaceController extends Controller {
         $data = json_decode($request->input("data"), true);
         if (json_last_error() == JSON_ERROR_NONE) {
           if (isset($data["username"]) && isset($data["password"])) {
-            AuthProcessor::DeleteAccount($data["username"], $data["password"], $data["apikey"]);
+            AuthProcessor::DeleteAccount($data["username"], $data["password"], $data["apikey"], $request);
           } else {
             ResponseHandler::ReturnNotEnoughParameters();
           }

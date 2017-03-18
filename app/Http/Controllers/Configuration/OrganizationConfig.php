@@ -6,44 +6,41 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Interfaces\Configuration;
 use App\Http\Controllers\Command\CoreCommand;
 
+use App\Http\Controllers\Connectors\MysqlConnector;
+use App\Http\Controllers\Connectors\LdapConnector;
+
 class OrganizationConfig extends Controller implements Configuration {
-  static function GetConfig() {
-    return [
-      "AuthProcessor" => "mysql",
-      "ApiKey" => CoreCommand::GetApiKey(),
-
-      "Production" => CoreCommand::GetProduction(),
-
-      // LDAP (Lightweight Directory Access Protocol) settings below
-      // Special configuration required for OpenLDAP.
-      // Active Directory should work out of the box.
-      "LdapType"                 => "openldap",
-      "LdapBaseDN"               => "dc=core,dc=towerdevs,dc=xyz",
-      "LdapDomainControllers"    => ["core.towerdevs.xyz"],
-      "LdapAdminUsername"        => "cn=admin,dc=core,dc=towerdevs,dc=xyz", // Needs to be full Base DN for OpenLDAP!
-      "LdapAdminPassword"        => "YCZuICPMNBe50mwgOCyMON9bT",
-      "LdapAccountPrefix"        => "",
-      "LdapAccountSuffix"        => "",
-      "LdapAdminAccountSuffix"   => "",
-      "LdapPort"                 => 389,
-      "LdapFollowReferrals"      => false,
-      "LdapUseSSL"               => false,
-      "LdapUseTLS"               => true,
-      "LdapTimeout"              => 5,
-    ];
-  }
-
   static function GetStaticConfig() {
     return [
-      "OrganizationName" => "CoreNIC", // Your organization's name.
-      "OrganizationKey" => "2a9fb648e7e180f44a078496b2d599c61784c5cdd028b8859bd79516300d", // Your organization's key.
 
+      // Organization configuration
+      "OrganizationName" => "CoreNIC", // Your organization's name.
+      "OrganizationKey" => "c86c83d2102d148edf2061809eadee9e605f2fe01a0afbf9980c81a06509", // Your organization's key.
+
+      // License information.
+      "LicenseSerial" => "1",
+      "LicenseKey" => "008fc7f4690a8e05e1215dd2fa164ce8418902517aa06d635198f7fe02ad",
+
+      // Do not change the below settings under any circumstances, or your support will be voided.
       //"MasterServer" => "https://central.auth.core:43106", // Do not change.
       "MasterServer" => "https://localhost:43106", // For development only!
-
-      "LicenseSerial" => "1",
-      "LicenseKey" => "047ce94623f0aa4ecc4721de1f76f08ce6574052ecebb697b345d3007cd1",
     ];
   }
+
+  static function GetConfig() {
+    return [
+      // Set this to the class of your authentication connector.
+      "AuthProcessor" => new MysqlConnector,
+
+      // Set this only if you want to switch to the non-commercial Free edition.
+      // Please note that a lot of features are disabled in this edition.
+      "EnableCommunity" => false,
+
+      // Do not change the below settings under any circumstances, or your support will be voided.
+      "ApiKey" => CoreCommand::GetApiKey(),
+      "Production" => CoreCommand::GetProduction(),
+    ];
+  }
+
 }
 ?>

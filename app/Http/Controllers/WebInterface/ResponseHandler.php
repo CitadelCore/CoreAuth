@@ -112,8 +112,8 @@ class ResponseHandler extends Controller {
     echo json_encode($response);
   }
 
-  static function ReturnRiskEngineWarning($incidentid) {
-    $response = array("type"=>"error", "id"=>"1", "attributes"=>array("error_friendly"=>"RiskEngine security warning.", "error_code"=>"riskengine_warning", "incident_id"=>$incidentid));
+  static function ReturnRiskEngineWarning($incidentid, $token) {
+    $response = array("type"=>"error", "id"=>"1", "attributes"=>array("error_friendly"=>"RiskEngine security warning.", "error_code"=>"riskengine_warning", "incident_id"=>$incidentid), "payload"=>array("token"=>$token));
     header('Content-Type: application/json');
     echo json_encode($response);
   }
