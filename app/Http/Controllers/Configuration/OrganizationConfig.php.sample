@@ -22,6 +22,7 @@ class OrganizationConfig extends Controller implements Configuration {
       "LicenseKey" => "Sample",
 
       // Do not change the below settings under any circumstances, or your support will be voided.
+      "MasterServer" => "https://auth.towerdevs.xyz", // Do not change.
     ];
   }
 
