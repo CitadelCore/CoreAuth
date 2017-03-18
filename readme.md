@@ -27,6 +27,27 @@ After setting your database, run this command to update your database schema:
 php artisan migrate
 ```
 
+If you use Nginx, set up your configuration file like this so Laravel can work:
+```
+
+location / {
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying a 404.
+                try_files \$uri \$uri/ /index.php?\$query_string;
+        }
+
+location ~ \.php$ {
+                try_files \$uri /index.php =404;
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                include fastcgi_params;
+}
+
+
+
+```
+
 Then copy the file App/Http/Controllers/Configuration/OrganizationConfig.php.example to OrganizationConfig.php and set your variables inside it.
 
 1. Configuration
