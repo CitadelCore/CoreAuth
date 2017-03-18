@@ -36,6 +36,8 @@ php artisan config:clear
 If you use Nginx, set up your configuration file like this so Laravel can work:
 ```
 
+charset_types text/html text/xml text/plain text/vnd.wap.wml application/javascript application/rss+xml application/json;
+
 location / {
                 # First attempt to serve request as file, then
                 # as directory, then fall back to displaying a 404.
