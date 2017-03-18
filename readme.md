@@ -3,6 +3,32 @@ This server is for our on-premises solution. For new customers and businesses, t
 
 If you don't yet have a on-premises license for CoreAuth, you can buy one at our website, https://auth.central.core, or alternatively use our limited free community license for non-commercial use.
 
+Prerequisites
+
+php-mbstring and Composer must be installed:
+```
+sudo apt-get install php-mbstring composer
+```
+
+Then update your dependencies:
+```
+composer install
+```
+
+Copy the file .env.example to .env:
+```
+cp .env.example .env
+```
+
+Then set your SQL database settings in .env, if you have any.
+After setting your database, run this command to update your database schema:
+
+```
+php artisan migrate
+```
+
+Then copy the file App/Http/Controllers/Configuration/OrganizationConfig.php.example to OrganizationConfig.php and set your variables inside it.
+
 1. Configuration
 
 For CoreAuth Enterprise:
