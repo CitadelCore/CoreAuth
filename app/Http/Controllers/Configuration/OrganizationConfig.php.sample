@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Http\Controllers\Configuration;
+
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Interfaces\Configuration;
+use App\Http\Controllers\Command\CoreCommand;
+
+use App\Http\Controllers\Connectors\MysqlConnector;
+use App\Http\Controllers\Connectors\LdapConnector;
+
+class OrganizationConfig extends Controller implements Configuration {
+  static function GetStaticConfig() {
+    return [
+
+      // Organization configuration
+      "OrganizationName" => "Sample", // Your organization's name.
+      "OrganizationKey" => "Sample", // Your organization's key.
+
+      // License information.
+      "LicenseSerial" => "Sample",
+      "LicenseKey" => "Sample",
+
+      // Do not change the below settings under any circumstances, or your support will be voided.
+      "MasterServer" => "https://core.towerdevs.xyz/core2", // Do not change.
+    ];
+  }
+
+  static function GetConfig() {
+    return [
+      // Set this to the class of your authentication connector.
+      "AuthProcessor" => new MysqlConnector,
+
+      // Set this only if you want to switch to the non-commercial Free edition.
+      // Please note that a lot of features are disabled in this edition.
+      "EnableCommunity" => false,
+
+      // Do not change the below settings under any circumstances, or your support will be voided.
+      "ApiKey" => CoreCommand::GetApiKey(),
+      "Production" => CoreCommand::GetProduction(),
+    ];
+  }
+
+}
+?>
