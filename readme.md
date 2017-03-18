@@ -27,6 +27,12 @@ After setting your database, run this command to update your database schema:
 php artisan migrate
 ```
 
+And set up the environment:
+```
+php artisan key:generate
+php artisan config:clear
+```
+
 If you use Nginx, set up your configuration file like this so Laravel can work:
 ```
 
