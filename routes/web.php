@@ -13,34 +13,39 @@
 
 use App\Http\Controllers\WebInterface\WebInterfaceController;
 use App\Http\Controllers\WebInterface\HtmlResponseHandler;
+use App\Http\Controllers\WebInterface\ApiController;
 use Illuminate\Http\Request;
 
-Route::get('/', function (Request $request) {
+Route::match(['get', 'post'], '/', function (Request $request) {
     WebInterfaceController::HandleWebAccess();
 });
 
-Route::post('/endpoints', function (Request $request) {
+Route::match(['get', 'post'], '/endpoints', function (Request $request) {
     WebInterfaceController::ReturnEndpoints();
 });
 
-Route::post('/endpoints/login', function (Request $request) {
+Route::match(['get', 'post'], '/endpoints/login', function (Request $request) {
     return HtmlResponseHandler::ShowLoginEndpoint($request);
 });
 
-Route::post('/endpoints/logout', function (Request $request) {
+Route::match(['get', 'post'], '/endpoints/logout', function (Request $request) {
     return HtmlResponseHandler::ShowLogoutEndpoint($request);
 });
 
-Route::post('/endpoints/changepassword', function (Request $request) {
+Route::match(['get', 'post'], '/endpoints/changepassword', function (Request $request) {
     return HtmlResponseHandler::ShowChangePasswordEndpoint($request);
 });
 
-Route::post('/endpoints/createaccount', function (Request $request) {
+Route::match(['get', 'post'], '/endpoints/createaccount', function (Request $request) {
     return HtmlResponseHandler::ShowCreateAccountEndpoint($request);
 });
 
-Route::post('/endpoints/deleteaccount', function (Request $request) {
+Route::match(['get', 'post'], '/endpoints/deleteaccount', function (Request $request) {
     return HtmlResponseHandler::ShowDeleteAccountEndpoint($request);
+});
+
+Route::match(['get', 'post'], '/endpoints/managemfa', function (Request $request) {
+    return HtmlResponseHandler::ShowMultiFactorManageEndpoint($request);
 });
 
 Route::post('/endpoints/login/post', function (Request $request) {
@@ -65,35 +70,31 @@ Route::post('/endpoints/deleteaccount/post', function (Request $request) {
 
 
 Route::get('/endpoints/api', function (Request $request) {
-    WebInterfaceController::ReturnApiEndpoints();
+    ApiController::ReturnApiEndpoints();
 });
 
 Route::post('/endpoints/api/login', function (Request $request) {
-    WebInterfaceController::HandleLoginEndpoint($request);
+    ApiController::HandleLoginEndpoint($request);
 });
 
 Route::post('/endpoints/api/logout', function (Request $request) {
-    WebInterfaceController::HandleLogoutEndpoint($request);
+    ApiController::HandleLogoutEndpoint($request);
 });
 
 Route::post('/endpoints/api/changepassword', function (Request $request) {
-    WebInterfaceController::HandleChangePasswordEndpoint($request);
+    ApiController::HandleChangePasswordEndpoint($request);
 });
 
 Route::post('/endpoints/api/createaccount', function (Request $request) {
-    WebInterfaceController::HandleCreateAccountEndpoint($request);
+    ApiController::HandleCreateAccountEndpoint($request);
 });
 
 Route::post('/endpoints/api/deleteaccount', function (Request $request) {
-    WebInterfaceController::HandleDeleteAccountEndpoint($request);
-});
-
-Route::post('/endpoints/api/updateaccount', function (Request $request) {
-    WebInterfaceController::HandleUpdateAccountEndpoint($request);
+    ApiController::HandleDeleteAccountEndpoint($request);
 });
 
 Route::post('/developer/hashtest', function (Request $request) {
-    WebInterfaceController::HandleHashTest($request);
+    ApiController::HandleHashTest($request);
 });
 
 Route::get('/developer/testlogin', function (Request $request) {

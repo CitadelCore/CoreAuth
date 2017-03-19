@@ -7,6 +7,8 @@ use App\Http\Controllers\WebInterface\ResponseHandler;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Command\RiskEngine;
+use App\Http\Controllers\Command\CoreCommand;
+use App\Http\Controllers\Command\CoreMultifactor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -33,8 +35,27 @@ class AuthProcessor extends Controller {
             ResponseHandler::ReturnRiskEngineWarning("1", $connector->token);
             Log::warning("User " . $username . " logged in successfully, but warned by RiskEngine.");
           } elseif ($re->status == "2farequired") {
-            ResponseHandler::ReturnMfaRequired();
-            Log::warning("User " . $username . " hit RiskEngine MFA challenge.");
+            if ($request->has("token")) {
+              $mfa = new CoreMultifactor;
+              $mfa->username = $username;
+              $mfa->token = $request->input("token");
+              if ($mfa->CheckToken() == true) {
+                $re->SendAppend("mfa_accepted", strtotime(date('y-m-d h:m:s')));
+                Log::info("User " . $username . " entered a correct MFA token.");
+                $re->SendAppend("login_acceptedon", strtotime(date('y-m-d h:m:s')));
+                $re->SendAppend("ip_loggedin", $_SERVER['REMOTE_ADDR']);
+                if (isset($_SERVER['HTTP_USER_AGENT'])) { $re->SendAppend("recent_browser", $_SERVER['HTTP_USER_AGENT']); };
+                Log::info("User " . $username . " logged in successfully.");
+                ResponseHandler::ReturnLoginAccepted($connector->token);
+              } else {
+                $re->SendAppend("mfa_denied", strtotime(date('y-m-d h:m:s')));
+                Log::warning("User " . $username . " entered an incorrect MFA token.");
+                ResponseHandler::ReturnMfaDenied();
+              }
+            } else {
+              ResponseHandler::ReturnMfaRequired();
+              Log::warning("User " . $username . " hit RiskEngine MFA challenge.");
+            }
           } elseif ($re->status == "blocked") {
             ResponseHandler::ReturnRiskEngineError("1");
             Log::alert("User " . $username . " login attempt blocked by RiskEngine.");
@@ -201,11 +222,13 @@ class AuthProcessor extends Controller {
          $re->SendAppend("ip_loggedin", $_SERVER['REMOTE_ADDR']);
          if (isset($_SERVER['HTTP_USER_AGENT'])) { $re->SendAppend("recent_browser", $_SERVER['HTTP_USER_AGENT']); };
          $connector->DeleteAccount($username);
+         CoreCommand::RemoveUser($username);
        } elseif ($re->status == "warning") {
          $re->SendAppend("login_acceptedon", strtotime(date('y-m-d h:m:s')));
          $re->SendAppend("ip_loggedin", $_SERVER['REMOTE_ADDR']);
          if (isset($_SERVER['HTTP_USER_AGENT'])) { $re->SendAppend("recent_browser", $_SERVER['HTTP_USER_AGENT']); };
          $connector->DeleteAccount($username);
+         CoreCommand::RemoveUser($username);
        } elseif ($re->status == "2farequired") {
          ResponseHandler::ReturnMfaRequired();
        } elseif ($re->status == "blocked") {
@@ -217,6 +240,7 @@ class AuthProcessor extends Controller {
          $re->SendAppend("ip_loggedin", $_SERVER['REMOTE_ADDR']);
          if (isset($_SERVER['HTTP_USER_AGENT'])) { $re->SendAppend("recent_browser", $_SERVER['HTTP_USER_AGENT']); };
          $connector->DeleteAccount($username);
+         CoreCommand::RemoveUser($username);
        } else {
          ResponseHandler::ReturnInternalError();
        }

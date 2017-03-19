@@ -23,6 +23,13 @@ class OrganizationConfig extends Controller implements Configuration {
 
       // Do not change the below settings under any circumstances, or your support will be voided.
       "MasterServer" => "https://auth.towerdevs.xyz", // Do not change.
+
+      "EnableRegistrations" => false, // Whether to enable manual registrations.
+      "DatabaseReadOnly" => false, // Whether to only allow logins and logouts from the database.
+      "EnforcePasswordAge" => "1 Year", // Unimplemented. Requires PolicyEngine.
+      "EnforcePasswordHistory" => 5, // Unimplimented. Requires PolicyEngine.
+
+      "RiskEngineMode" => "lenient", // Can be lenient, careful or strict.
     ];
   }
 

@@ -28,16 +28,21 @@ class HtmlResponseHandler extends Controller {
   }
 
   static function ShowChangePasswordEndpoint($request) {
-
+    return view("interface/cpassword");
   }
 
   static function ShowDeleteAccountEndpoint($request) {
-
+    return view("interface/deleteaccount");
   }
 
-  static function ShowUpdateAccountEndpoint($request) {
-
+  static function ShowCreateAccountEndpoint($request) {
+    return view("interface/newaccount");
   }
+
+  static function ShowMultiFactorManageEndpoint($request) {
+    return view("interface/mfaeenable");
+  }
+
 
   static function HandleTestLogin($request) {
     if ($request->has("token")) {

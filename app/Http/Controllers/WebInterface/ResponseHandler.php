@@ -52,6 +52,12 @@ class ResponseHandler extends Controller {
     echo json_encode($response);
   }
 
+  static function ReturnMfaDenied() {
+    $response = array("type"=>"error", "id"=>"1", "attributes"=>array("error_friendly"=>"Multi-Factor token incorrect.", "error_code"=>"user_mfadenied"));
+    header('Content-Type: application/json');
+    echo json_encode($response);
+  }
+
   static function ReturnInternalError() {
     $response = array("type"=>"error", "id"=>"1", "attributes"=>array("error_friendly"=>"Internal server error.", "error_code"=>"internal_error"));
     header('Content-Type: application/json');

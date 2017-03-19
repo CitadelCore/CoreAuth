@@ -17,47 +17,73 @@ use App\Http\Controllers\Command\CoreLicensor;
 
 class CoreCommand extends Controller {
   static function GetApiKey() {
-    return self::GetVariable('apikey');
+    return self::SendCommand('apikey');
   }
 
   static function GetProduction() {
-    return self::GetVariable('production');
+    return self::SendCommand('production');
   }
 
   static function Get2FAAllowed() {
-    return self::GetVariable('allow_2fa');
+    return self::SendCommand('allow_2fa');
   }
 
   static function GetExtSSOAllowed() {
-    return self::GetVariable('allow_extsso');
+    return self::SendCommand('allow_extsso');
   }
 
   static function GetRiskEngineAllowed() {
-    return self::GetVariable('allow_riskengine');
+    return self::SendCommand('allow_riskengine');
   }
 
   static function GetApiAllowed() {
-    return self::GetVariable('allow_api');
+    return self::SendCommand('allow_api');
   }
 
-  static function GetVariable($variable) {
+  static function SendCommand($param) {
+    $config = OrganizationConfig::GetStaticConfig();
+    $params = [
+      'VariableName' => $param,
+      'Organization' => $config["OrganizationName"],
+      'OrganizationKey' => $config["OrganizationKey"],
+      'LicenseSerial' => $config["LicenseSerial"],
+      'LicenseKey' => $config["LicenseKey"],
+      'ServerHostname' => gethostname(),
+    ];
+
+    $urlsuffix = "varstore";
+
+    return self::ServerCommand($params, $urlsuffix, $param);
+  }
+
+  static function RemoveUser($username) {
+    $config = OrganizationConfig::GetStaticConfig();
+    $params = [
+      'VariableName' => $param,
+      'Organization' => $config["OrganizationName"],
+      'OrganizationKey' => $config["OrganizationKey"],
+      'LicenseSerial' => $config["LicenseSerial"],
+      'LicenseKey' => $config["LicenseKey"],
+      'ServerHostname' => gethostname(),
+      'Username' => $username,
+    ];
+
+    $urlsuffix = "deluser";
+
+    return self::ServerCommand($params, $urlsuffix);
+  }
+
+  static function ServerCommand($params, $urlsuffix, $variable = "none") {
     CoreLicensor::ValidateLicense();
     $request = new \GuzzleHttp\Client();
     $config = OrganizationConfig::GetStaticConfig();
     try {
       $response = $request->request(
         'POST',
-        $config["MasterServer"] . "/ca/v1/varstore",
+        $config["MasterServer"] . "/ca/v1/$urlsuffix",
         [
           'verify' => false,
-          'form_params' => [
-            'VariableName' => $variable,
-            'Organization' => $config["OrganizationName"],
-            'OrganizationKey' => $config["OrganizationKey"],
-            'LicenseSerial' => $config["LicenseSerial"],
-            'LicenseKey' => $config["LicenseKey"],
-            'ServerHostname' => gethostname(),
-          ]
+          'form_params' => $params,
         ]
       );
     } catch (RequestException $e) {
@@ -67,8 +93,10 @@ class CoreCommand extends Controller {
     $data = json_decode($return, true);
     if (json_last_error() == JSON_ERROR_NONE) {
       if ($data['type'] == "response") {
-        if ($data['payload'][$variable] != null) {
+        if ($data['payload'] != null) {
           return $data['payload'][$variable];
+        } elseif ($data['attributes']['response_code'] != null) {
+          return $data['attributes']['response_code'];
         } elseif ($data['type'] == "error") {
           if ($data['attributes']['error_code'] == "org_error") {
             return "An invalid organization is configured. Resolution: Verify the organization name in the server configuration.";
